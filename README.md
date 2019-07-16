@@ -1,2 +1,3 @@
-# cpl
+# CPLex
+
 Classical Propositional Logic in Elixir
