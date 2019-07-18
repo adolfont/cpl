@@ -97,24 +97,30 @@ defmodule Cpl do
   end
 
   defp expand_all_aux(tableau, partial_result) do
-    temp = expand_tableau(tableau)
-    # IO.puts("temp:")
-    # IO.inspect(temp)
-
-    temp = my_flatten(temp)
-    # IO.puts("my_flatten(temp):")
-    # IO.inspect(temp)
+    temp =
+      tableau
+      |> expand_tableau()
+      |> my_flatten()
 
     cond do
       temp == [] ->
-        tableau ++ partial_result
+        partial_result ++ tableau
 
       true ->
-        expand_all_aux(temp, tableau ++ partial_result)
+        expand_all_aux(temp, partial_result ++ tableau)
     end
   end
 
   def expand_all(tableau) do
     expand_all_aux(tableau, [])
+  end
+
+  def is_beta([:f, [_, :and, _]]), do: true
+  def is_beta([:t, [_, :or, _]]), do: true
+  def is_beta([:t, [_, :implies, _]]), do: true
+  def is_beta(_), do: false
+
+  def select_betas(list) do
+    Enum.filter(list, &is_beta/1)
   end
 end

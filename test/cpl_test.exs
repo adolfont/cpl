@@ -96,21 +96,60 @@ defmodule CplTest do
     assert expand_tableau(x) == [[[:t, :a]]]
   end
 
-  test "Expand all" do
+  test "Expand all 1" do
     tableau = [
       [:t, [:not, [:not, :a]]],
       [:t, [:b, :and, :c]]
     ]
 
-    assert MapSet.new(expand_all(tableau)) ==
-             MapSet.new([
+    assert expand_all(tableau) ==
+             [
                [:t, [:not, [:not, :a]]],
-               [:f, [:not, :a]],
-               [:t, :a],
                [:t, [:b, :and, :c]],
+               [:f, [:not, :a]],
                [:t, :b],
-               [:t, :c]
-             ])
+               [:t, :c],
+               [:t, :a]
+             ]
+  end
+
+  test "Expand all 2" do
+    tableau = [
+      [:t, [:not, [:not, :a]]],
+      [:f, [:d, :and, :e]],
+      [:t, [:b, :and, :c]]
+    ]
+
+    assert expand_all(tableau) ==
+             [
+               [:t, [:not, [:not, :a]]],
+               [:f, [:d, :and, :e]],
+               [:t, [:b, :and, :c]],
+               [:f, [:not, :a]],
+               [:t, :b],
+               [:t, :c],
+               [:t, :a]
+             ]
+  end
+
+  test "Select betas 1" do
+    tableau = [
+      [:t, [:not, [:not, :a]]],
+      [:f, [:d, :and, :e]],
+      [:t, [:b, :and, :c]]
+    ]
+
+    assert select_betas(tableau) == [[:f, [:d, :and, :e]]]
+  end
+
+  test "Select betas 2" do
+    tableau = [
+      [:t, [:not, [:a, :and, :g]]],
+      [:f, [:d, :and, :e]],
+      [:t, [:b, :and, :c]]
+    ]
+
+    assert select_betas(expand_all(tableau)) == [[:f, [:d, :and, :e]], [:f, [:a, :and, :g]]]
   end
 
   test "branching rules" do
