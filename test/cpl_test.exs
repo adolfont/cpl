@@ -152,6 +152,66 @@ defmodule CplTest do
     assert select_betas(expand_all(tableau)) == [[:f, [:d, :and, :e]], [:f, [:a, :and, :g]]]
   end
 
+  test "Bifurcate 1" do
+    tableau = [
+      [:t, [:a, :or, :b]],
+      [:f, :a]
+    ]
+
+    result_tableau = [
+      tableau,
+      [[:t, :a]],
+      [[:t, :b]]
+    ]
+
+    [first | _] = select_betas(tableau)
+
+    assert bifurcate(tableau, first) ==
+             result_tableau
+  end
+
+  test "Bifurcate 2" do
+    tableau = [
+      [:t, [[:a, :or, :b], :or, :c]],
+      [:f, :c]
+    ]
+
+    result_tableau = [
+      tableau,
+      [[:t, [:a, :or, :b]]],
+      [[:t, :c]]
+    ]
+
+    [first | _] = select_betas(tableau)
+
+    assert bifurcate(tableau, first) ==
+             result_tableau
+  end
+
+  test "Bifurcate 3" do
+    tableau = [
+      [:t, [[:a, :or, :b], :or, :c]],
+      [:f, :c]
+    ]
+
+    result_tableau = [
+      tableau,
+      [[:t, [:a, :or, :b]]],
+      [[:t, :c]]
+    ]
+
+    [root, left, right] = result_tableau
+
+    [first | _] = select_betas(left)
+
+    assert [root, bifurcate(left, first), right] ==
+             [
+               [[:t, [[:a, :or, :b], :or, :c]], [:f, :c]],
+               [[[:t, [:a, :or, :b]]], [[:t, :a]], [[:t, :b]]],
+               [[:t, :c]]
+             ]
+  end
+
   test "branching rules" do
     assert apply_branching_rule([:f, [:p, :and, :q]]) == {[:f, :p], [:f, :q]}
     assert apply_branching_rule([:t, [:p, :or, :q]]) == {[:t, :p], [:t, :q]}

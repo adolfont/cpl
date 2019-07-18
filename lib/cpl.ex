@@ -123,4 +123,9 @@ defmodule Cpl do
   def select_betas(list) do
     Enum.filter(list, &is_beta/1)
   end
+
+  def bifurcate(tableau, formula) do
+    {left, right} = apply_branching_rule(formula)
+    [tableau] ++ [[left]] ++ [[right]]
+  end
 end
